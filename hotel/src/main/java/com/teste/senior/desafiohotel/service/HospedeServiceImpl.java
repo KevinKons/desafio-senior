@@ -1,12 +1,11 @@
 package com.teste.senior.desafiohotel.service;
 
-import com.teste.senior.desafiohotel.exception.CampoNuloException;
 import com.teste.senior.desafiohotel.model.Hospede;
 import com.teste.senior.desafiohotel.repository.HospedeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 
 @Component
 public class HospedeServiceImpl implements HospedeService {
@@ -15,14 +14,42 @@ public class HospedeServiceImpl implements HospedeService {
     HospedeRepository hospedeRepository;
 
     @Override
-    public Hospede cadastrarHospede(Hospede hospede) throws CampoNuloException {
-        if(hospede.getNome() == null)
-            throw new CampoNuloException("Campo nome não pode ser nulo");
-        if(hospede.getDocumento() == null)
-            throw new CampoNuloException("Campo nome não pode ser nulo");
+    public Hospede cadastrarHospede(Hospede hospede) {
+        return hospedeRepository.save(hospede);
+    }
 
-        Hospede cadastrado = hospedeRepository.save(hospede);
+    @Override
+    public Hospede buscarHospedePorNome(String nome) {
+        return hospedeRepository.findByNome(nome);
+    }
 
-        return cadastrado;
+    @Override
+    public Hospede buscarHospedePorDocumento(String documento) {
+        return hospedeRepository.findByDocumento(documento);
+    }
+
+    @Override
+    public Hospede buscarHospedePorTelefone(String telefone) {
+        return hospedeRepository.findByTelefone(telefone);
+    }
+
+    @Override
+    public Hospede editarHospede(long id, Hospede hospedeNovaInformacao) {
+        Hospede hospedeAtual = hospedeRepository.findById(id).get();
+        hospedeAtual.setNome(hospedeNovaInformacao.getNome());
+        hospedeAtual.setDocumento(hospedeNovaInformacao.getDocumento());
+        return hospedeRepository.save(hospedeNovaInformacao);
+    }
+
+    @Override
+    public Hospede excluirHospede(long id) {
+        Hospede hospede = hospedeRepository.findById(id).get();
+        hospedeRepository.delete(hospede);
+        return hospede;
+    }
+
+    @Override
+    public List<Hospede> buscarTodosOsHospedes() {
+        return hospedeRepository.findAll();
     }
 }

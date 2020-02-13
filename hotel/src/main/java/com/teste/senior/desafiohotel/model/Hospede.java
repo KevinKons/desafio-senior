@@ -1,6 +1,7 @@
 package com.teste.senior.desafiohotel.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Objects;
@@ -15,15 +16,23 @@ public class Hospede implements Serializable {
 
     @Column(nullable = false, length = 25)
     @Size(min = 3, max = 25)
+    @NotNull(message = "Nome não pode ser nulo")
     private String nome;
 
     @Column(nullable = false, length = 6, unique = true)
     @Size(min = 6, max = 6)
+    @NotNull(message = "Documento não pode ser nulo")
     private String documento;
 
-    public Hospede(String nome, String documento) {
+    @Column(nullable = false, length = 14)
+    @Size(min = 8, max = 14)
+    @NotNull(message = "Telefone não pode ser nulo")
+    private String telefone;
+
+    public Hospede(String nome, String documento, String telefone) {
         this.nome = nome;
         this.documento = documento;
+        this.telefone = telefone;
     }
 
     public Hospede() {
@@ -40,6 +49,14 @@ public class Hospede implements Serializable {
 
     public String getDocumento() {
         return documento;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public void setDocumento(String documento) {
+        this.documento = documento;
     }
 
     @Override

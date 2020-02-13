@@ -20,6 +20,7 @@ public class HospedeServiceImplTest extends DesafioHotelApplicationTests {
 
     String nome = "Kevin";
     String documento = "123456";
+    String telefone = "991092600";
     Hospede hospede;
 
     @MockBean
@@ -32,7 +33,7 @@ public class HospedeServiceImplTest extends DesafioHotelApplicationTests {
 
     @Test
     public void quando_camposEstaoOk_deve_cadastrar() throws CampoNuloException {
-        hospede = new Hospede(nome, documento);
+        hospede = new Hospede(nome, documento, telefone);
         when(hospedeRepository.save(hospede)).thenReturn(hospede);
 
         Hospede result = hospedeService.cadastrarHospede(hospede);
@@ -43,7 +44,7 @@ public class HospedeServiceImplTest extends DesafioHotelApplicationTests {
 
     @Test(expected = DataIntegrityViolationException.class)
     public void quando_documentoJaEstaCadastrado_deve_lancarExcecao() throws CampoNuloException, PSQLException {
-        hospede = new Hospede(nome, documento);
+        hospede = new Hospede(nome, documento, telefone);
         when(hospedeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         hospedeService.cadastrarHospede(hospede);
