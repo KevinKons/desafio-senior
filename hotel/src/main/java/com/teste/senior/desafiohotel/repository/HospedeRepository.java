@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface HospedeRepository extends CrudRepository<Hospede, Long> {
 
-    Hospede findByDocumento(String documento);
     List<Hospede> findAll();
-    Hospede findByNome(String nome);
-    Hospede findByTelefone(String telefone);
+    Hospede findByDocumento(String documento);
+    List<Hospede> findByNome(String nome);
+    List<Hospede> findByTelefone(String telefone);
 }

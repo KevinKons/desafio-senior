@@ -1,11 +1,13 @@
 package com.teste.senior.desafiohotel.service;
 
+import com.teste.senior.desafiohotel.exception.HospedeNaoExistente;
 import com.teste.senior.desafiohotel.model.Hospede;
 import com.teste.senior.desafiohotel.repository.HospedeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Component
 public class HospedeServiceImpl implements HospedeService {
@@ -19,31 +21,51 @@ public class HospedeServiceImpl implements HospedeService {
     }
 
     @Override
-    public Hospede buscarHospedePorNome(String nome) {
-        return hospedeRepository.findByNome(nome);
+    public List<Hospede> buscarHospedePorNome(String nome) throws HospedeNaoExistente {
+        List<Hospede> hospedes = hospedeRepository.findByNome(nome);
+        if(hospedes.size() == 0)
+            throw new HospedeNaoExistente();
+        return hospedes;
     }
 
     @Override
-    public Hospede buscarHospedePorDocumento(String documento) {
-        return hospedeRepository.findByDocumento(documento);
+    public Hospede buscarHospedePorDocumento(String documento) throws HospedeNaoExistente {
+        Hospede hospede = hospedeRepository.findByDocumento(documento);
+        if(hospede == null)
+            throw new HospedeNaoExistente();
+        return hospede;
     }
 
     @Override
-    public Hospede buscarHospedePorTelefone(String telefone) {
-        return hospedeRepository.findByTelefone(telefone);
+    public List<Hospede> buscarHospedePorTelefone(String telefone) throws HospedeNaoExistente {
+        List<Hospede> hospedes = hospedeRepository.findByNome(telefone);
+        if(hospedes.size() == 0)
+            throw new HospedeNaoExistente();
+        return hospedes;
     }
 
     @Override
-    public Hospede editarHospede(long id, Hospede hospedeNovaInformacao) {
-        Hospede hospedeAtual = hospedeRepository.findById(id).get();
-        hospedeAtual.setNome(hospedeNovaInformacao.getNome());
-        hospedeAtual.setDocumento(hospedeNovaInformacao.getDocumento());
-        return hospedeRepository.save(hospedeNovaInformacao);
+    public Hospede editarHospede(long id, Hospede hospedeNovaInformacao) throws HospedeNaoExistente {
+        Hospede hospede;
+        try {
+            hospede = hospedeRepository.findById(id).get();
+        } catch (NoSuchElementException ex) {
+            throw new HospedeNaoExistente();
+        }
+        hospede.setNome(hospedeNovaInformacao.getNome());
+        hospede.setDocumento(hospedeNovaInformacao.getDocumento());
+        hospede.setTelefone(hospedeNovaInformacao.getTelefone());
+        return hospedeRepository.save(hospede);
     }
 
     @Override
-    public Hospede excluirHospede(long id) {
-        Hospede hospede = hospedeRepository.findById(id).get();
+    public Hospede excluirHospede(long id) throws HospedeNaoExistente {
+        Hospede hospede;
+        try {
+            hospede = hospedeRepository.findById(id).get();
+        } catch (NoSuchElementException ex) {
+            throw new HospedeNaoExistente();
+        }
         hospedeRepository.delete(hospede);
         return hospede;
     }

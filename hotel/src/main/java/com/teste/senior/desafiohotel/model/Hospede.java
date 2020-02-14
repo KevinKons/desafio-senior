@@ -19,9 +19,9 @@ public class Hospede implements Serializable {
     @NotNull(message = "Nome não pode ser nulo")
     private String nome;
 
-    @Column(nullable = false, length = 6, unique = true)
     @Size(min = 6, max = 6)
     @NotNull(message = "Documento não pode ser nulo")
+    @Column(nullable = false, length = 6, unique = true)
     private String documento;
 
     @Column(nullable = false, length = 14)
@@ -57,6 +57,14 @@ public class Hospede implements Serializable {
 
     public void setDocumento(String documento) {
         this.documento = documento;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
     @Override
