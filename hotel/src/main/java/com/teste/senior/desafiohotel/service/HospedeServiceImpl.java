@@ -31,14 +31,14 @@ public class HospedeServiceImpl implements HospedeService {
     @Override
     public Hospede buscarHospedePorDocumento(String documento) throws HospedeNaoExistente {
         Hospede hospede = hospedeRepository.findByDocumento(documento);
-        if(hospede == null)
-            throw new HospedeNaoExistente();
+        if(hospede == null) {
+            throw new HospedeNaoExistente();}
         return hospede;
     }
 
     @Override
     public List<Hospede> buscarHospedePorTelefone(String telefone) throws HospedeNaoExistente {
-        List<Hospede> hospedes = hospedeRepository.findByNome(telefone);
+        List<Hospede> hospedes = hospedeRepository.findByTelefone(telefone);
         if(hospedes.size() == 0)
             throw new HospedeNaoExistente();
         return hospedes;

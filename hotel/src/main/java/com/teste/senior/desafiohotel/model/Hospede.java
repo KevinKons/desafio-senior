@@ -1,9 +1,13 @@
 package com.teste.senior.desafiohotel.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -28,6 +32,10 @@ public class Hospede implements Serializable {
     @Size(min = 8, max = 14)
     @NotNull(message = "Telefone não pode ser nulo")
     private String telefone;
+
+    @OneToMany(mappedBy = "hospede")
+    @JsonIgnore
+    private List<CheckIn> checkIns = new ArrayList<>();
 
     public Hospede(String nome, String documento, String telefone) {
         this.nome = nome;
@@ -65,6 +73,14 @@ public class Hospede implements Serializable {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public List<CheckIn> getCheckIns() {
+        return checkIns;
+    }
+
+    public void setCheckIns(List<CheckIn> checkIns) {
+        this.checkIns = checkIns;
     }
 
     @Override

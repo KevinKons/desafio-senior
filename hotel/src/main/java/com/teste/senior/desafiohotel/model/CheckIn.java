@@ -1,45 +1,47 @@
 package com.teste.senior.desafiohotel.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "check_ins")
-public class CheckIn {
+public class CheckIn implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private long id;
 
     @Column(nullable = false)
-    private LocalDate dataEntrada;
+    private LocalDateTime dataEntrada;
 
     @Column()
-    private LocalDate dataSaida;
+    private LocalDateTime dataSaida;
 
     @Column(name = "adicional_veiculo", nullable = false)
     private boolean adicionalVeiculo;
 
-    @OneToOne(cascade = CascadeType.PERSIST, optional = false)
+    @ManyToOne()
+    @JoinColumn(name = "hospede_id")
     private Hospede hospede;
 
     public long getId() {
         return id;
     }
 
-    public LocalDate getDataEntrada() {
+    public LocalDateTime getDataEntrada() {
         return dataEntrada;
     }
 
-    public void setDataEntrada(LocalDate dataEntrada) {
+    public void setDataEntrada(LocalDateTime dataEntrada) {
         this.dataEntrada = dataEntrada;
     }
 
-    public LocalDate getDataSaida() {
+    public LocalDateTime getDataSaida() {
         return dataSaida;
     }
 
-    public void setDataSaida(LocalDate dataSaida) {
+    public void setDataSaida(LocalDateTime dataSaida) {
         this.dataSaida = dataSaida;
     }
 
@@ -58,4 +60,6 @@ public class CheckIn {
     public void setHospede(Hospede hospede) {
         this.hospede = hospede;
     }
+
+
 }
