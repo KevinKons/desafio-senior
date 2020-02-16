@@ -18,18 +18,20 @@ public class CheckInServiceImpl implements CheckInService {
 
     @Override
     public CheckIn criarCheckIn(CheckIn checkIn) throws HospedeNaoExistente {
-        Hospede hospede = checkIn.getHospede();
-        if(hospede.getDocumento() != null)
-            hospede = hospedeService.buscarHospedePorDocumento(hospede.getDocumento());
-        else if(hospede.getNome() != null)
-            hospede = hospedeService.buscarHospedePorNome(hospede.getNome()).get(0);
-        else if(hospede.getTelefone() != null)
-            hospede = hospedeService.buscarHospedePorTelefone(hospede.getTelefone()).get(0);
-        else
-            throw new HospedeNaoExistente();
-
+        Hospede hospede = buscaHospedeCadastrado(checkIn.getHospede());
         checkIn.setHospede(hospede);
         checkIn = checkInRepository.save(checkIn);
         return checkIn;
+    }
+
+    private Hospede buscaHospedeCadastrado(Hospede hospede) throws HospedeNaoExistente {
+        if(hospede.getDocumento() != null)
+            return hospedeService.buscarHospedePorDocumento(hospede.getDocumento());
+        else if(hospede.getNome() != null)
+            return hospedeService.buscarHospedePorNome(hospede.getNome()).get(0);
+        else if(hospede.getTelefone() != null)
+            return hospedeService.buscarHospedePorTelefone(hospede.getTelefone()).get(0);
+        else
+            throw new HospedeNaoExistente();
     }
 }
