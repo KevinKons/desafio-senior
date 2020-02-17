@@ -7,8 +7,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 @Entity
 @Table(name = "hospedes")
@@ -36,6 +36,12 @@ public class Hospede implements Serializable {
     @OneToMany(mappedBy = "hospede")
     @JsonIgnore
     private List<CheckIn> checkIns = new ArrayList<>();
+
+    @Transient
+    private int totalGasto;
+
+    @Transient
+    private int valorUltimaHospedagem;
 
     public Hospede(String nome, String documento, String telefone) {
         this.nome = nome;
@@ -83,12 +89,39 @@ public class Hospede implements Serializable {
         this.checkIns = checkIns;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Hospede hospede = (Hospede) o;
-        return Objects.equals(nome, hospede.nome) &&
-                Objects.equals(documento, hospede.documento);
+    public void calculaTotalGasto() {
+        int total = 0;
+        for(CheckIn checkIn : checkIns) {
+            total += checkIn.getValor();
+        }
+        this.totalGasto = total;
+    }
+
+    public void defineValorUltimaHospedagem() {
+        if(checkIns.size() == 0)
+            this.valorUltimaHospedagem = 0;
+        else {
+            Iterator<CheckIn> iterator = checkIns.iterator();
+            CheckIn ultimaHospedagem = iterator.next();
+            while(iterator.hasNext()) {
+                CheckIn checkIn = iterator.next();
+                if(ultimaHospedagem.getDataSaida().isBefore(checkIn.getDataSaida())) {
+                    ultimaHospedagem = checkIn;
+                }
+            }
+            this.valorUltimaHospedagem = ultimaHospedagem.getValor();
+        }
+    }
+
+    public double getTotalGasto() {
+        return totalGasto;
+    }
+
+    public int getValorUltimaHospedagem() {
+        return valorUltimaHospedagem;
+    }
+
+    public void addCheckIn(CheckIn checkIn) {
+        this.checkIns.add(checkIn);
     }
 }

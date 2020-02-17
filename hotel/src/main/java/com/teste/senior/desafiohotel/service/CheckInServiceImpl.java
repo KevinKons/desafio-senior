@@ -7,6 +7,8 @@ import com.teste.senior.desafiohotel.repository.CheckInRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class CheckInServiceImpl implements CheckInService {
 
@@ -17,11 +19,22 @@ public class CheckInServiceImpl implements CheckInService {
     HospedeService hospedeService;
 
     @Override
-    public CheckIn criarCheckIn(CheckIn checkIn) throws HospedeNaoExistente {
+    public CheckIn criarCheckIn(CheckIn checkIn) throws Exception {
+        if(ehDepois(checkIn.getDataEntrada(), checkIn.getDataSaida()))
+            throw new Exception("Data de entrada deve ser antes da data de saída");
         Hospede hospede = buscaHospedeCadastrado(checkIn.getHospede());
         checkIn.setHospede(hospede);
+        hospede.addCheckIn(checkIn);
         checkIn = checkInRepository.save(checkIn);
+        hospede.calculaTotalGasto();
+        hospede.defineValorUltimaHospedagem();
         return checkIn;
+    }
+
+    private boolean ehDepois(LocalDateTime dataEntrada, LocalDateTime dataSaida) {
+        if(dataEntrada.isAfter(dataSaida))
+            return true;
+        return false;
     }
 
     private Hospede buscaHospedeCadastrado(Hospede hospede) throws HospedeNaoExistente {

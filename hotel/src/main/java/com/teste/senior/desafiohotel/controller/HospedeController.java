@@ -1,6 +1,7 @@
 package com.teste.senior.desafiohotel.controller;
 
 import com.teste.senior.desafiohotel.model.Hospede;
+import com.teste.senior.desafiohotel.repository.HospedeRepository;
 import com.teste.senior.desafiohotel.service.HospedeService;
 import com.teste.senior.desafiohotel.util.CustomErrorType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,6 +24,9 @@ public class HospedeController {
     @Autowired
     HospedeService hospedeService;
 
+    @Autowired
+    HospedeRepository hospedeRepository;
+
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<?> criarHospede(@Valid @RequestBody Hospede hospede) {
         try {
@@ -30,6 +35,18 @@ public class HospedeController {
         } catch (DataIntegrityViolationException ex) {
             return new ResponseEntity<>(new CustomErrorType(DOCUMENTO_JA_CADASTRADO), HttpStatus.CONFLICT);
         }
+    }
+
+    @GetMapping(path = "/nao-mais-no-hotel", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> buscaHospedesQueNaoEstaoNoHotel() {
+        List<Hospede> hospedes = hospedeRepository.naoEstaoNoHotel(LocalDateTime.now());
+        return new ResponseEntity<>(hospedes, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/ainda-no-hotel", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> buscaHospedesQueEstaoNoHotel() {
+        List<Hospede> checkIns = hospedeService.buscarHospedesNoHotel();
+        return new ResponseEntity<>(checkIns, HttpStatus.OK);
     }
 
     @GetMapping(path = "/nome/{nome}", produces = {MediaType.APPLICATION_JSON_VALUE})

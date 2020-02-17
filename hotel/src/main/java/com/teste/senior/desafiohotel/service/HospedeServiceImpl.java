@@ -6,6 +6,7 @@ import com.teste.senior.desafiohotel.repository.HospedeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -25,6 +26,7 @@ public class HospedeServiceImpl implements HospedeService {
         List<Hospede> hospedes = hospedeRepository.findByNome(nome);
         if(hospedes.size() == 0)
             throw new HospedeNaoExistente();
+        defineValoresHospedagem(hospedes);
         return hospedes;
     }
 
@@ -33,6 +35,8 @@ public class HospedeServiceImpl implements HospedeService {
         Hospede hospede = hospedeRepository.findByDocumento(documento);
         if(hospede == null) {
             throw new HospedeNaoExistente();}
+        hospede.calculaTotalGasto();
+        hospede.defineValorUltimaHospedagem();
         return hospede;
     }
 
@@ -41,6 +45,7 @@ public class HospedeServiceImpl implements HospedeService {
         List<Hospede> hospedes = hospedeRepository.findByTelefone(telefone);
         if(hospedes.size() == 0)
             throw new HospedeNaoExistente();
+        defineValoresHospedagem(hospedes);
         return hospedes;
     }
 
@@ -72,6 +77,24 @@ public class HospedeServiceImpl implements HospedeService {
 
     @Override
     public List<Hospede> buscarTodosOsHospedes() {
-        return hospedeRepository.findAll();
+        List<Hospede> hospedes = hospedeRepository.findAll();
+        defineValoresHospedagem(hospedes);
+        return hospedes;
+    }
+
+    @Override
+    public List<Hospede> buscarHospedesNoHotel() {
+        LocalDateTime agora = LocalDateTime.now();
+        List<Hospede> hospedes = hospedeRepository.
+                findDistinctHospedesByCheckInsDataSaidaAfterAndCheckInsDataEntradaBefore(agora, agora);
+        defineValoresHospedagem(hospedes);
+        return hospedes;
+    }
+
+    private void defineValoresHospedagem(List<Hospede> hospedes) {
+        for(Hospede hospede : hospedes) {
+            hospede.calculaTotalGasto();
+            hospede.defineValorUltimaHospedagem();
+        }
     }
 }

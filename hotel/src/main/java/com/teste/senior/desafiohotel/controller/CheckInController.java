@@ -1,6 +1,5 @@
 package com.teste.senior.desafiohotel.controller;
 
-import com.teste.senior.desafiohotel.exception.HospedeNaoExistente;
 import com.teste.senior.desafiohotel.model.CheckIn;
 import com.teste.senior.desafiohotel.service.CheckInService;
 import com.teste.senior.desafiohotel.util.CustomErrorType;

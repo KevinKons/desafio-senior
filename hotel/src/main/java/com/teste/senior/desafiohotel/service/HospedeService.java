@@ -16,4 +16,5 @@ public interface HospedeService {
     Hospede editarHospede(long id, Hospede hospede) throws HospedeNaoExistente;
     Hospede excluirHospede(long id) throws HospedeNaoExistente;
     List<Hospede> buscarTodosOsHospedes();
+    List<Hospede> buscarHospedesNoHotel();
 }
